@@ -8,62 +8,69 @@
 </head>
 <body>
 
-  <div class="calculator-container">
-    <h1 class="title">Calculadora de Comisión</h1>
-    <form id="comisionForm">
-      <div class="input-group">
-        <label for="puntos">Intenciones:</label>
-        <input type="number" id="puntos" required>
+    <div class="calculator-container">
+        <h1 class="title">CALCULADORA DE COMISIONES</h1>
+        <form id="comisionForm">
+          <div class="input-group">
+            <label for="puntos">Puntos Obtenidos:</label>
+            <input type="number" id="puntos" min="0" step="1" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="efectividad">Efectividad (%):</label>
+            <input type="number" id="efectividad" min="0" max="100" step="0.01" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="Noaplica">No Aplica (%):</label>
+            <input type="number" id="Noaplica" min="0" max="100" step="0.01" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="caidaFront">Caída Front (%):</label>
+            <input type="number" id="caidaFront" min="0" max="100" step="0.01" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="csat">CSAT (0-10):</label>
+            <input type="number" id="csat" min="0" max="10" step="0.1" required>
+          </div>
+          
+          <h3 class="penalty-title">Penalidades</h3>
+          
+          <div class="penalty-group">
+            <label for="amonestaciones">Amonestaciones:</label>
+            <input type="number" id="amonestaciones" min="0" step="1" required>
+          </div>
+          
+          <div class="penalty-group">
+            <label for="suspensiones">Suspensiones:</label>
+            <input type="number" id="suspensiones" min="0" step="1" required>
+          </div>
+          
+          <div class="penalty-group">
+            <label for="ausentismos">Ausentismos Injustificados:</label>
+            <input type="number" id="ausentismos" min="0" step="1" required>
+          </div>
+          
+          <div class="penalty-group">
+            <label for="malasPracticas">Malas Prácticas:</label>
+            <input type="number" id="malasPracticas" min="0" step="1" required>
+          </div>
+          
+          <button type="submit" class="btn-calculate">CALCULAR COMISIÓN</button>
+        </form>
       </div>
-
-      <div class="input-group">
-        <label for="efectividad">Efectividad (%):</label>
-        <input type="number" id="efectividad" required step="0.01">
+      
+      <!-- Modal de Resultados -->
+      <div id="modalResultado" class="modal hidden">
+        <div class="modal-content">
+          <span id="closeModal" class="close">&times;</span>
+          <h2>Resultado</h2>
+          <div class="result-amount">S/ 0.00</div>
+          <div id="penaltyDetails" class="penalty-details"></div>
+        </div>
       </div>
-
-      <div class="input-group">
-        <label for="caidaFront">Caída Front (%):</label>
-        <input type="number" id="caidaFront" required step="0.01">
-      </div>
-
-      <div class="input-group">
-        <label for="csat">CSAT:</label>
-        <input type="number" id="csat" required step="0.01">
-      </div>
-
-      <div class="penalty-group">
-        <label for="amonestaciones">Amonestaciones:</label>
-        <input type="number" id="amonestaciones" min="0">
-      </div>
-
-      <div class="penalty-group">
-        <label for="suspensiones">Suspensiones:</label>
-        <input type="number" id="suspensiones" min="0">
-      </div>
-
-      <div class="penalty-group">
-        <label for="ausentismos">Ausentismos:</label>
-        <input type="number" id="ausentismos" min="0">
-      </div>
-
-      <div class="penalty-group">
-        <label for="malasPracticas">Malas Prácticas:</label>
-        <input type="number" id="malasPracticas" min="0">
-      </div>
-
-      <button type="submit" class="btn-calculate">Calcular Comisión</button>
-    </form>
-  </div>
-
-  <!-- Modal de resultado -->
-  <div id="modalResultado" class="modal hidden">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h2>Tu comisión será:</h2>
-      <p class="result-amount"></p>
-      <div id="penaltyDetails" class="penalty-details"></div>
-    </div>
-  </div>
 
   <script src="js/script.js"></script>
 </body>
