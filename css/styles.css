@@ -1,66 +1,184 @@
-/* Estilos base */
-body {
-    background-color: #f3f4f6;
-    font-family: 'Helvetica Neue', sans-serif;
-    padding: 1rem;
+/* Reset y estilos base */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root {
+    --primary: #4361ee;
+    --primary-dark: #3a0ca3;
+    --secondary: #f72585;
+    --success: #4cc9f0;
+    --danger: #ef233c;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+  }
+  
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    line-height: 1.5;
+    color: var(--dark);
+    overflow-x: hidden;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.2s forwards;
+  }
+  
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  
+  /* Contenedor principal */
+  .calculator-container {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1rem 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+    animation: slideUp 0.5s 0.3s forwards;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .calculator-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+  }
+  
+  @keyframes slideUp {
+    to { transform: translateY(0); }
+  }
+  
+  /* Título */
+  .title {
+    text-align: center;
+    color: var(--primary-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--secondary);
+    border-radius: 2px;
+  }
+  
+  /* Grupos de entrada */
+  .input-group, .penalty-group {
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+  
+  .input-group label, .penalty-group label {
+    display: block;
+    color: var(--dark);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    transition: var(--transition);
+  }
+  
+  .input-group input, .penalty-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: #f8f9fa;
+  }
+  
+  .input-group input:focus, .penalty-group input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    background-color: white;
+  }
+  
+  /* Sección de penalidades */
+  .penalty-title {
+    color: var(--secondary);
+    margin: 1.8rem 0 1rem;
+    font-size: 1.3rem;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .penalty-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--secondary), transparent);
+  }
+  
+  /* Botón de calcular */
+  .btn-calculate {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-weight: 700;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-  }
-  
-  .calculator-container {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .title {
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 1rem;
-  }
-  
-  .input-group,
-  .penalty-group {
-    margin-bottom: 0.75rem;
-  }
-  
-  .input-group label,
-  .penalty-group label {
-    display: block;
-    color: #374151;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  
-  .input-group input,
-  .penalty-group input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-  }
-  
-  .btn-calculate {
-    width: 100%;
-    background-color: #2563eb;
-    color: white;
-    font-weight: bold;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 1rem;
+    gap: 0.5rem;
   }
   
   .btn-calculate:hover {
-    background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+  }
+  
+  .btn-calculate:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+  }
+  
+  .btn-calculate::after {
+    content: '→';
+    font-size: 1.2rem;
+    transition: var(--transition);
+  }
+  
+  .btn-calculate:hover::after {
+    transform: translateX(3px);
   }
   
   /* Modal */
@@ -70,64 +188,164 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 1rem;
+  }
+  
+  .modal.fade-in {
+    opacity: 1;
+    pointer-events: auto;
   }
   
   .modal-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    text-align: center;
-    position: relative;
-    width: 90%;
+    background: white;
+    width: 100%;
     max-width: 400px;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal.fade-in .modal-content {
+    transform: translateY(0);
   }
   
   .close {
     position: absolute;
-    top: 0.75rem;
-    right: 1rem;
-    font-size: 1.5rem;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
+    color: var(--gray);
     cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
   }
   
-  .hidden {
-    display: none;
+  .close:hover {
+    color: var(--danger);
+    transform: rotate(90deg);
   }
   
-  /* Animación de aparición */
-  .fade-in {
-    animation: fadeIn 0.5s;
+  /* Resultados */
+  .result-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: var(--transition);
+    text-align: center;
   }
   
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .positive-result {
+    color: #2ecc71;
+    background-color: rgba(46, 204, 113, 0.1);
+    border: 2px dashed #2ecc71;
   }
   
-  /* Responsive */
-  @media (max-width: 480px) {
+  .zero-result {
+    color: var(--danger);
+    background-color: rgba(239, 35, 60, 0.1);
+    border: 2px dashed var(--danger);
+  }
+  
+  .penalty-details {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .penalty-details p {
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .bonus-text {
+    color: #27ae60;
+    background-color: rgba(39, 174, 96, 0.1);
+    border-left: 4px solid #27ae60;
+  }
+  
+  .penalty-text {
+    color: var(--danger);
+    background-color: rgba(239, 35, 60, 0.1);
+    border-left: 4px solid var(--danger);
+  }
+  
+  /* Scrollbar personalizada */
+  .penalty-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .penalty-details::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .penalty-details::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+  }
+  
+  /* Efectos de entrada */
+  .input-group input:focus + label, 
+  .penalty-group input:focus + label {
+    color: var(--primary);
+  }
+  
+  /* Animaciones */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  
+  .btn-calculate.pulse {
+    animation: pulse 0.5s ease;
+  }
+  
+  /* Efecto al tocar inputs en móviles */
+  @media (hover: none) {
+    .input-group input:active, 
+    .penalty-group input:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  /* Mejoras para pantallas muy pequeñas */
+  @media (max-width: 360px) {
     .calculator-container {
-      padding: 1rem;
-      border-radius: 0.75rem;
+      padding: 1.2rem;
     }
-  
+    
     .title {
-      font-size: 1.25rem;
+      font-size: 1.4rem;
     }
-  
+    
+    .input-group input, 
+    .penalty-group input {
+      padding: 0.7rem;
+    }
+    
     .btn-calculate {
+      padding: 0.9rem;
       font-size: 1rem;
-      padding: 0.5rem;
-    }
-  
-    .modal-content {
-      padding: 1rem;
     }
   }
-  
