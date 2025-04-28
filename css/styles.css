@@ -524,3 +524,85 @@ body {
         font-size: 2rem;
     }
 }
+/* Mejoras para el modal con mucho contenido */
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh; /* Limita la altura al 90% de la ventana */
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* Permite desplazamiento vertical */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hacer que el botón de cerrar siempre esté visible */
+.close {
+    position: sticky; /* Cambiado de absolute a sticky */
+    top: 0;
+    right: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--gray);
+    cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+    float: right; /* Alineado a la derecha */
+    margin-bottom: 10px; /* Espacio para que no esté pegado al contenido */
+    background-color: white; /* Fondo para que sea visible sobre el contenido */
+    border-radius: 50%; /* Forma circular */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.close:hover {
+    color: var(--danger);
+    transform: rotate(90deg);
+}
+
+/* Manejo mejorado del contenido dentro del modal */
+.penalty-details {
+    max-height: 40vh; /* Limita la altura de esta sección específica */
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.02); /* Fondo sutil para distinguir esta área */
+}
+
+/* Mejora para dispositivos móviles */
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 1.5rem;
+        max-height: 85vh; /* Un poco más pequeño en móviles */
+    }
+    
+    .penalty-details {
+        max-height: 30vh; /* Más pequeño en móviles */
+    }
+}
+
+/* Estilo para cuando el usuario hace scroll */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
