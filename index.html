@@ -5,72 +5,98 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Comisión</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-    <div class="calculator-container">
-        <h1 class="title">CALCULADORA DE COMISIONES</h1>
-        <form id="comisionForm">
-          <div class="input-group">
-            <label for="puntos">Puntos Obtenidos:</label>
-            <input type="number" id="puntos" min="0" step="1" required>
-          </div>
-          
-          <div class="input-group">
-            <label for="efectividad">Efectividad (%):</label>
-            <input type="number" id="efectividad" min="0" max="100" step="0.01" required>
-          </div>
-          
-          <div class="input-group">
-            <label for="Noaplica">No Aplica (%):</label>
-            <input type="number" id="Noaplica" min="0" max="100" step="0.01" required>
-          </div>
-          
-          <div class="input-group">
-            <label for="caidaFront">Caída Front (%):</label>
-            <input type="number" id="caidaFront" min="0" max="100" step="0.01" required>
-          </div>
-          
-          <div class="input-group">
-            <label for="csat">CSAT (0-10):</label>
-            <input type="number" id="csat" min="0" max="10" step="0.1" required>
-          </div>
-          
-          <h3 class="penalty-title">Penalidades</h3>
-          
-          <div class="penalty-group">
-            <label for="amonestaciones">Amonestaciones:</label>
-            <input type="number" id="amonestaciones" min="0" step="1" required>
-          </div>
-          
-          <div class="penalty-group">
-            <label for="suspensiones">Suspensiones:</label>
-            <input type="number" id="suspensiones" min="0" step="1" required>
-          </div>
-          
-          <div class="penalty-group">
-            <label for="ausentismos">Ausentismos Injustificados:</label>
-            <input type="number" id="ausentismos" min="0" step="1" required>
-          </div>
-          
-          <div class="penalty-group">
-            <label for="malasPracticas">Malas Prácticas:</label>
-            <input type="number" id="malasPracticas" min="0" step="1" required>
-          </div>
-          
-          <button type="submit" class="btn-calculate">CALCULAR COMISIÓN</button>
-        </form>
+  <div class="calculator-container">
+    <h1 class="title"><i class="fas fa-calculator"></i> CALCULADORA DE COMISIONES VERSION 1.0.2</h1>
+    
+    <!-- Sección de publicidad -->
+   
+    
+    <form id="comisionForm">
+      <!-- Campos del formulario -->
+      <div class="input-group">
+        <label for="puntos"><i class="fas fa-bullseye"></i> Intenciones:</label>
+        <input type="number" id="puntos" min="0" step="1" required>
       </div>
       
-      <!-- Modal de Resultados -->
-      <div id="modalResultado" class="modal hidden">
-        <div class="modal-content">
-          <span id="closeModal" class="close">&times;</span>
-          <h2>Resultado</h2>
-          <div class="result-amount">S/ 0.00</div>
-          <div id="penaltyDetails" class="penalty-details"></div>
+      <div class="input-group">
+        <label for="efectividad"><i class="fas fa-chart-line"></i> Efectividad (%):</label>
+        <input type="number" id="efectividad" min="0" max="100" step="0.01" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="Noaplica"><i class="fas fa-times-circle"></i> No Aplica (%):</label>
+        <input type="number" id="Noaplica" min="0" max="100" step="0.01" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="caidaFront"><i class="fas fa-phone-slash"></i> Caída Front (%):</label>
+        <input type="number" id="caidaFront" min="0" max="100" step="0.01" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="csat"><i class="fas fa-smile"></i> CSAT (0-10):</label>
+        <input type="number" id="csat" min="0" max="10" step="0.1" required>
+      </div>
+      
+      <h3 class="penalty-title"><i class="fas fa-exclamation-triangle"></i> Penalidades</h3>
+      
+      <div class="penalty-group">
+        <label for="amonestaciones"><i class="fas fa-comment-exclamation"></i> Amonestaciones:</label>
+        <input type="number" id="amonestaciones" min="0" step="1" required>
+      </div>
+      
+      <div class="penalty-group">
+        <label for="suspensiones"><i class="fas fa-user-slash"></i> Suspensiones:</label>
+        <input type="number" id="suspensiones" min="0" step="1" required>
+      </div>
+      
+      <div class="penalty-group">
+        <label for="ausentismos"><i class="fas fa-calendar-times"></i> Ausentismos Injustificados:</label>
+        <input type="number" id="ausentismos" min="0" step="1" required>
+      </div>
+      
+      <div class="penalty-group">
+        <label for="malasPracticas"><i class="fas fa-ban"></i> Malas Prácticas:</label>
+        <input type="number" id="malasPracticas" min="0" step="1" required>
+      </div>
+      
+      <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> CALCULAR COMISIÓN</button>
+      <br>
+      <br>
+     <!--  <div class="ad-container">
+        <div class="ad-title"><i class="fas fa-store"></i> VISITA NUESTRA TIENDA</div>
+        <p>Productos exclusivos para ustedes</p>
+        <a href="https://tutienda.com" class="ad-link" target="_blank">Ver catálogo <i class="fas fa-arrow-right"></i></a>
+      </div>-->
+    </form>
+  </div>
+  
+  <!-- Modal de Resultados -->
+  <div id="modalResultado" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h2><i class="fas fa-poll"></i> Resultado</h2>
+      
+      <div class="result-amount-container">
+        <div class="result-amount" id="resultWithPenalties">S/ 0.00</div>
+        <div class="result-without-penalties" id="resultWithoutPenalties"></div>
+      </div>
+      
+      <div id="penaltyDetails" class="penalty-details"></div>
+      
+      <div class="donation-message">
+        <p><i class="fas fa-heart"></i> ¡Esta herramienta es completamente gratis!</p>
+        <p>Si deseas apoyar su desarrollo:</p>
+        <div class="yape-info">
+          <div class="yape-number"><i class="fas fa-mobile-alt"></i> 928 669 585</div>
+          <img src="https://via.placeholder.com/100" alt="Yape QR" class="yape-qr">
         </div>
       </div>
+    </div>
+  </div>
 
   <script src="js/script.js"></script>
 </body>
