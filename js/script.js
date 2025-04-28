@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const suspensiones = parseInt(document.getElementById('suspensiones').value) || 0;
         const ausentismos = parseInt(document.getElementById('ausentismos').value) || 0;
         const malasPracticas = parseInt(document.getElementById('malasPracticas').value) || 0;
-
+        showModal();
         // Escala de puntos
         let pagoPunto = 0;
         if (puntos <= 120) pagoPunto = 0;
@@ -139,16 +139,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10);
     }
 
-    // Cerrar modal
     function closeModalFunction() {
         modal.classList.remove('fade-in');
         setTimeout(() => {
             modal.classList.add('hidden');
-            // Resetear el formulario
+    
             form.reset();
         }, 300);
     }
-
+    function showModal() {
+        modal.classList.remove('hidden');
+        // Pequeño retraso para permitir que el DOM se actualice
+        setTimeout(() => {
+            modal.classList.add('fade-in');
+        }, 10);
+    }
     closeModal.addEventListener('click', closeModalFunction);
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
@@ -178,7 +183,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.id === 'csat' && this.value > 10) this.value = 10;
         });
     });
-
+    function showModal() {
+        console.log("Mostrando modal");
+        modal.classList.remove('hidden');
+        console.log("Clase hidden removida");
+        setTimeout(() => {
+            modal.classList.add('fade-in');
+            console.log("Clase fade-in añadida");
+        }, 10);
+    }
     // Presionar Enter para calcular
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('keypress', function(e) {
