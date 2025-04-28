@@ -181,7 +181,16 @@ body {
     transform: translateX(3px);
 }
 
-/* Modal */
+.hidden {
+    display: none !important;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none !important;
+    pointer-events: none;
+}
+
 .modal {
     position: fixed;
     top: 0;
