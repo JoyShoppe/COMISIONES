@@ -1,104 +1,608 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Comisión</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-  <div class="calculator-container">
-    <h1 class="title"><i class="fas fa-calculator"></i> CALCULADORA DE COMISIONES VERSION 1.0.2</h1>
-    
-    <!-- Sección de publicidad -->
-   
-    
-    <form id="comisionForm">
-      <!-- Campos del formulario -->
-      <div class="input-group">
-        <label for="puntos"><i class="fas fa-bullseye"></i> Intenciones:</label>
-        <input type="number" id="puntos" min="0" step="1" required>
-      </div>
-      
-      <div class="input-group">
-        <label for="efectividad"><i class="fas fa-chart-line"></i> Efectividad (%):</label>
-        <input type="number" id="efectividad" min="0" max="100" step="0.01" required>
-      </div>
-      
-      <div class="input-group">
-        <label for="Noaplica"><i class="fas fa-times-circle"></i> No Aplica (%):</label>
-        <input type="number" id="Noaplica" min="0" max="100" step="0.01" required>
-      </div>
-      
-      <div class="input-group">
-        <label for="caidaFront"><i class="fas fa-phone-slash"></i> Caída Front (%):</label>
-        <input type="number" id="caidaFront" min="0" max="100" step="0.01" required>
-      </div>
-      
-      <div class="input-group">
-        <label for="csat"><i class="fas fa-smile"></i> CSAT (0-10):</label>
-        <input type="number" id="csat" min="0" max="10" step="0.1" required>
-      </div>
-      
-      <h3 class="penalty-title"><i class="fas fa-exclamation-triangle"></i> Penalidades</h3>
-      
-      <div class="penalty-group">
-        <label for="amonestaciones"><i class="fas fa-comment-exclamation"></i> Amonestaciones:</label>
-        <input type="number" id="amonestaciones" min="0" step="1" required>
-      </div>
-      
-      <div class="penalty-group">
-        <label for="suspensiones"><i class="fas fa-user-slash"></i> Suspensiones:</label>
-        <input type="number" id="suspensiones" min="0" step="1" required>
-      </div>
-      
-      <div class="penalty-group">
-        <label for="ausentismos"><i class="fas fa-calendar-times"></i> Ausentismos Injustificados:</label>
-        <input type="number" id="ausentismos" min="0" step="1" required>
-      </div>
-      
-      <div class="penalty-group">
-        <label for="malasPracticas"><i class="fas fa-ban"></i> Malas Prácticas:</label>
-        <input type="number" id="malasPracticas" min="0" step="1" required>
-      </div>
-      
-      <button type="submit" class="btn-calculate"><i class="fas fa-calculator"></i> CALCULAR COMISIÓN</button>
-      <br>
-      <br>
-     <!--  <div class="ad-container">
-        <div class="ad-title"><i class="fas fa-store"></i> VISITA NUESTRA TIENDA</div>
-        <p>Productos exclusivos para ustedes</p>
-        <a href="https://tutienda.com" class="ad-link" target="_blank">Ver catálogo <i class="fas fa-arrow-right"></i></a>
-      </div>-->
-    </form>
-  </div>
-  
-  <div id="modalResultado" class="modal hidden">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h2><i class="fas fa-poll"></i> Resultado</h2>
-      
-      <div class="result-amount-container">
-        <div class="result-amount" id="resultWithPenalties">S/ 0.00</div>
-        <div class="result-without-penalties" id="resultWithoutPenalties"></div>
-      </div>
-      
-      <div id="penaltyDetails" class="penalty-details"></div>
-      
-      <div class="donation-message">
-        <p><i class="fas fa-heart"></i> ¡Esta herramienta es completamente gratis!</p>
-        <p>Si deseas apoyar su desarrollo:</p>
-        <div class="yape-info">
-          <div class="yape-number"><i class="fas fa-mobile-alt"></i> 928 669 585</div>
-          <div class="yape-qr-container">
-            <img src="/api/placeholder/100/100" alt="Yape QR" class="yape-qr">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-  <script src="js/script.js"></script>
-</body>
-</html>
+:root {
+    --primary: #4361ee;
+    --primary-dark: #3a0ca3;
+    --secondary: #f72585;
+    --success: #4cc9f0;
+    --danger: #ef233c;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    line-height: 1.5;
+    color: var(--dark);
+    overflow-x: hidden;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.2s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Contenedor principal */
+.calculator-container {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1rem 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+    animation: slideUp 0.5s 0.3s forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.calculator-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+/* Título */
+.title {
+    text-align: center;
+    color: var(--primary-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--secondary);
+    border-radius: 2px;
+}
+
+/* Grupos de entrada */
+.input-group, .penalty-group {
+    margin-bottom: 1.2rem;
+    position: relative;
+}
+
+.input-group label, .penalty-group label {
+    display: block;
+    color: var(--dark);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.input-group input, .penalty-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: #f8f9fa;
+}
+
+.input-group input:focus, .penalty-group input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    background-color: white;
+}
+
+/* Sección de penalidades */
+.penalty-title {
+    color: var(--secondary);
+    margin: 1.8rem 0 1rem;
+    font-size: 1.3rem;
+    position: relative;
+    display: inline-block;
+}
+
+.penalty-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--secondary), transparent);
+}
+
+/* Botón de calcular */
+.btn-calculate {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-weight: 700;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-calculate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+}
+
+.btn-calculate:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+}
+
+.btn-calculate::after {
+    content: '→';
+    font-size: 1.2rem;
+    transition: var(--transition);
+}
+
+.btn-calculate:hover::after {
+    transform: translateX(3px);
+}
+
+.hidden {
+    display: none !important;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none !important;
+    pointer-events: none;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 1rem;
+}
+
+.modal.fade-in {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal.fade-in .modal-content {
+    transform: translateY(0);
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--gray);
+    cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.close:hover {
+    color: var(--danger);
+    transform: rotate(90deg);
+}
+
+/* Resultados */
+.result-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.positive-result {
+    color: #2ecc71;
+    background-color: rgba(46, 204, 113, 0.1);
+    border: 2px dashed #2ecc71;
+}
+
+.zero-result {
+    color: var(--danger);
+    background-color: rgba(239, 35, 60, 0.1);
+    border: 2px dashed var(--danger);
+}
+
+.penalty-details {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.penalty-details p {
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bonus-text {
+    color: #27ae60;
+    background-color: rgba(39, 174, 96, 0.1);
+    border-left: 4px solid #27ae60;
+}
+
+.penalty-text {
+    color: var(--danger);
+    background-color: rgba(239, 35, 60, 0.1);
+    border-left: 4px solid var(--danger);
+}
+
+/* Mensaje de donación */
+.donation-message {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: rgba(67, 97, 238, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    text-align: center;
+}
+
+.donation-message p {
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.yape-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-dark);
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background-color: rgba(67, 97, 238, 0.2);
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* Scrollbar personalizada */
+.penalty-details::-webkit-scrollbar {
+    width: 6px;
+}
+
+.penalty-details::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.penalty-details::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+/* Efectos de entrada */
+.input-group input:focus + label, 
+.penalty-group input:focus + label {
+    color: var(--primary);
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-calculate.pulse {
+    animation: pulse 0.5s ease;
+}
+
+/* Efecto al tocar inputs en móviles */
+@media (hover: none) {
+    .input-group input:active, 
+    .penalty-group input:active {
+    transform: scale(0.98);
+    }
+}
+
+/* Mejoras para pantallas muy pequeñas */
+@media (max-width: 360px) {
+    .calculator-container {
+    padding: 1.2rem;
+    }
+    
+    .title {
+    font-size: 1.4rem;
+    }
+    
+    .input-group input, 
+    .penalty-group input {
+    padding: 0.7rem;
+    }
+    
+    .btn-calculate {
+    padding: 0.9rem;
+    font-size: 1rem;
+    }
+    
+    .modal-content {
+    padding: 1.5rem;
+    }
+    
+    .result-amount {
+    font-size: 2rem;
+    }
+}
+/* Estilos base y animaciones */
+:root {
+    --primary: #4361ee;
+    --primary-dark: #3a0ca3;
+    --secondary: #f72585;
+    --success: #4cc9f0;
+    --danger: #ef233c;
+    --warning: #ff9f1c;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Estructura principal y animaciones */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 1rem;
+    line-height: 1.5;
+    color: var(--dark);
+    overflow-x: hidden;
+    opacity: 0;
+    animation: fadeIn 0.5s 0.2s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.calculator-container {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1rem 0;
+    transform: translateY(20px);
+    transition: var(--transition);
+    animation: slideUp 0.5s 0.3s forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+/* Estilos para la publicidad */
+.ad-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px dashed var(--primary);
+    text-align: center;
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% { border-color: var(--primary); }
+    50% { border-color: var(--secondary); }
+    100% { border-color: var(--primary); }
+}
+
+.ad-title {
+    font-size: 1rem;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.ad-link {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: 0.5rem;
+}
+
+/* Estilos para los resultados */
+.result-amount-container {
+    margin: 1rem 0;
+}
+
+.result-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: var(--transition);
+    text-align: center;
+    animation: bounceIn 0.5s;
+}
+
+.result-without-penalties {
+    font-size: 1.2rem;
+    color: var(--gray);
+    text-align: center;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Animaciones adicionales */
+@keyframes bounceIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Estilos responsivos */
+@media (max-width: 480px) {
+    .calculator-container {
+        padding: 1.2rem;
+    }
+    
+    .result-amount {
+        font-size: 2rem;
+    }
+}
+/* Mejoras para el modal con mucho contenido */
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh; /* Limita la altura al 90% de la ventana */
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* Permite desplazamiento vertical */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hacer que el botón de cerrar siempre esté visible */
+.close {
+    position: sticky; /* Cambiado de absolute a sticky */
+    top: 0;
+    right: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--gray);
+    cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+    float: right; /* Alineado a la derecha */
+    margin-bottom: 10px; /* Espacio para que no esté pegado al contenido */
+    background-color: white; /* Fondo para que sea visible sobre el contenido */
+    border-radius: 50%; /* Forma circular */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.close:hover {
+    color: var(--danger);
+    transform: rotate(90deg);
+}
+
+/* Manejo mejorado del contenido dentro del modal */
+.penalty-details {
+    max-height: 40vh; /* Limita la altura de esta sección específica */
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.02); /* Fondo sutil para distinguir esta área */
+}
+
+/* Mejora para dispositivos móviles */
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 1.5rem;
+        max-height: 85vh; /* Un poco más pequeño en móviles */
+    }
+    
+    .penalty-details {
+        max-height: 30vh; /* Más pequeño en móviles */
+    }
+}
+
+/* Estilo para cuando el usuario hace scroll */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
