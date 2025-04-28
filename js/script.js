@@ -10,6 +10,80 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('loaded');
     }, 300);
 
+    // Función para mostrar el modal con animación
+    function showModal() {
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('fade-in');
+            // Scroll al inicio del modal cuando se abre
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.scrollTop = 0;
+            }
+        }, 10);
+    }
+
+    // Función para cerrar el modal con animación
+    function closeModalFunction() {
+        modal.classList.remove('fade-in');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+            form.reset();
+        }, 300);
+    }
+
+    // Event listeners para el modal
+    closeModal.addEventListener('click', closeModalFunction);
+    
+    // Cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModalFunction();
+        }
+    });
+    
+    // Cerrar al hacer clic fuera del contenido del modal
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModalFunction();
+        }
+    });
+
+    // Crear y agregar botón de cierre en la parte inferior
+    function addBottomCloseButton() {
+        const modalContent = document.querySelector('.modal-content');
+        const bottomCloseBtn = document.createElement('button');
+        bottomCloseBtn.textContent = 'Cerrar';
+        bottomCloseBtn.className = 'btn-close-bottom';
+        bottomCloseBtn.style.cssText = `
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1.5rem;
+            background: var(--gray);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        `;
+        bottomCloseBtn.addEventListener('mouseover', function() {
+            this.style.background = 'var(--primary)';
+        });
+        bottomCloseBtn.addEventListener('mouseout', function() {
+            this.style.background = 'var(--gray)';
+        });
+        bottomCloseBtn.addEventListener('click', closeModalFunction);
+        modalContent.appendChild(bottomCloseBtn);
+    }
+    
+    // Agregar el botón de cierre inferior
+    addBottomCloseButton();
+
+    // Manejo del formulario
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         
@@ -22,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     });
 
+    // Función principal de cálculo
     function calculateCommission() {
         const puntos = parseFloat(document.getElementById('puntos').value) || 0;
         const efectividad = parseFloat(document.getElementById('efectividad').value) || 0;
@@ -33,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const suspensiones = parseInt(document.getElementById('suspensiones').value) || 0;
         const ausentismos = parseInt(document.getElementById('ausentismos').value) || 0;
         const malasPracticas = parseInt(document.getElementById('malasPracticas').value) || 0;
-        showModal();
+
         // Escala de puntos
         let pagoPunto = 0;
         if (puntos <= 120) pagoPunto = 0;
@@ -126,40 +201,12 @@ document.addEventListener('DOMContentLoaded', function() {
             resultAmount.classList.remove('positive-result');
         }
 
-        // Mostrar detalles y mensaje de donación
-        const donationHTML = `
-            ${detalles}
-        `;
-        penaltyDetailsDiv.innerHTML = donationHTML;
+        // Mostrar detalles
+        penaltyDetailsDiv.innerHTML = detalles;
 
-        // Mostrar modal con animación
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.add('fade-in');
-        }, 10);
+        // Mostrar el modal
+        showModal();
     }
-
-    function closeModalFunction() {
-        modal.classList.remove('fade-in');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-    
-            form.reset();
-        }, 300);
-    }
-    function showModal() {
-        modal.classList.remove('hidden');
-        // Pequeño retraso para permitir que el DOM se actualice
-        setTimeout(() => {
-            modal.classList.add('fade-in');
-        }, 10);
-    }
-    closeModal.addEventListener('click', closeModalFunction);
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModalFunction();
-        }
-    });
 
     // Efecto hover en inputs
     document.querySelectorAll('input').forEach(input => {
@@ -183,15 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.id === 'csat' && this.value > 10) this.value = 10;
         });
     });
-    function showModal() {
-        console.log("Mostrando modal");
-        modal.classList.remove('hidden');
-        console.log("Clase hidden removida");
-        setTimeout(() => {
-            modal.classList.add('fade-in');
-            console.log("Clase fade-in añadida");
-        }, 10);
-    }
+
     // Presionar Enter para calcular
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('keypress', function(e) {
