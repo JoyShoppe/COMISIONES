@@ -12,12 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        // Efecto de botón pulsado
-        const btn = event.target.querySelector('button[type="submit"]');
-        btn.classList.add('clicked');
-        setTimeout(() => btn.classList.remove('clicked'), 200);
         
-        calculateCommission();
+        // Animación del botón
+        const btn = event.target.querySelector('button[type="submit"]');
+        btn.classList.add('pulse');
+        setTimeout(() => {
+            btn.classList.remove('pulse');
+            calculateCommission();
+        }, 500);
     });
 
     function calculateCommission() {
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (puntos <= 179) pagoPunto = 0.80;
         else if (puntos <= 229) pagoPunto = 1.00;
         else pagoPunto = 1.60;
-
+        
         let comision = puntos * pagoPunto;
         let detalles = "";
 
@@ -112,11 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Mostrar modal con animación
+        // Mostrar resultado
         resultAmount.textContent = `S/ ${comision.toFixed(2)}`;
-        penaltyDetailsDiv.innerHTML = detalles;
-        modal.classList.remove('hidden');
-        modal.classList.add('fade-in');
         
         // Agregar clase para el resultado
         if (comision > 0) {
@@ -126,33 +125,67 @@ document.addEventListener('DOMContentLoaded', function() {
             resultAmount.classList.add('zero-result');
             resultAmount.classList.remove('positive-result');
         }
+
+        // Mostrar detalles y mensaje de donación
+        const donationHTML = `
+            ${detalles}
+        `;
+        penaltyDetailsDiv.innerHTML = donationHTML;
+
+        // Mostrar modal con animación
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('fade-in');
+        }, 10);
     }
 
-    closeModal.addEventListener('click', () => {
-        modal.classList.add('fade-out');
+    // Cerrar modal
+    function closeModalFunction() {
+        modal.classList.remove('fade-in');
         setTimeout(() => {
             modal.classList.add('hidden');
-            modal.classList.remove('fade-out');
+            // Resetear el formulario
+            form.reset();
         }, 300);
-    });
+    }
 
-    // Cerrar modal al hacer clic fuera
-    modal.addEventListener('click', (e) => {
+    closeModal.addEventListener('click', closeModalFunction);
+    modal.addEventListener('click', function(e) {
         if (e.target === modal) {
-            closeModal.click();
+            closeModalFunction();
         }
     });
 
-    // No permitir valores negativos
+    // Efecto hover en inputs
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        });
+        input.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        });
+    });
+
+    // Validación de inputs
     document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.addEventListener('input', () => {
-            if (input.value < 0) input.value = 0;
-            
-            // Validar máximos según el campo
-            if (input.id === 'efectividad' && input.value > 100) input.value = 100;
-            if (input.id === 'Noaplica' && input.value > 100) input.value = 100;
-            if (input.id === 'caidaFront' && input.value > 100) input.value = 100;
-            if (input.id === 'csat' && input.value > 10) input.value = 10;
+        input.addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.id === 'efectividad' && this.value > 100) this.value = 100;
+            if (this.id === 'Noaplica' && this.value > 100) this.value = 100;
+            if (this.id === 'caidaFront' && this.value > 100) this.value = 100;
+            if (this.id === 'csat' && this.value > 10) this.value = 10;
+        });
+    });
+
+    // Presionar Enter para calcular
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.querySelector('.btn-calculate').click();
+            }
         });
     });
 });
