@@ -1,243 +1,397 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('comisionForm');
-    const modal = document.getElementById('modalResultado');
-    const closeModal = document.getElementById('closeModal');
-    const resultAmount = document.querySelector('.result-amount');
-    const penaltyDetailsDiv = document.getElementById('penaltyDetails');
+        // Abrir y cerrar menú lateral
+        const menuBtn = document.getElementById('menu-btn');
+        const sideMenu = document.getElementById('side-menu');
+        const closeMenu = document.getElementById('close-menu');
 
-    // Efecto de carga inicial
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 300);
+        menuBtn.addEventListener('click', () => {
+        sideMenu.classList.remove('translate-x-full');
+        });
 
-    // Función para mostrar el modal con animación
-    function showModal() {
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-        setTimeout(() => {
-            modal.classList.add('fade-in');
-            // Scroll al inicio del modal cuando se abre
-            const modalContent = document.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.scrollTop = 0;
+        closeMenu.addEventListener('click', () => {
+        sideMenu.classList.add('translate-x-full');
+        });
+
+        // Cerrar menú al hacer clic en un elemento del menú
+        document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            sideMenu.classList.add('translate-x-full');
+            
+            // Resaltar categoría seleccionada
+            const category = item.dataset.category;
+            highlightCategory(category);
+        });
+        });
+
+        // Funcionalidad para las imágenes de miniatura
+        document.querySelectorAll('.thumb-img').forEach(img => {
+        img.addEventListener('click', () => {
+            // Obtener el target (id de la imagen principal)
+            const targetId = img.dataset.target;
+            const mainImg = document.getElementById(targetId);
+            
+            if (mainImg) {
+            // Cambiar la imagen principal
+            mainImg.src = img.src;
+            
+            // Resaltar la miniatura seleccionada
+            const thumbsInSameGroup = document.querySelectorAll(`[data-target="${targetId}"]`);
+            thumbsInSameGroup.forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            img.classList.add('active');
             }
-        }, 10);
-    }
+        });
+        });
 
-    // Función para cerrar el modal con animación
-    function closeModalFunction() {
-        modal.classList.remove('fade-in');
+        // Modal de imagen - actualizado para incluir imágenes de reseñas
+        const imageModal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalClose = document.getElementById('modal-close');
+        const modalPrev = document.getElementById('modal-prev');
+        const modalNext = document.getElementById('modal-next');
+
+        let currentProductImages = [];
+        let currentImageIndex = 0;
+
+        // Abrir modal al hacer clic en la imagen principal o en imágenes de reseñas
+        document.querySelectorAll('.zoomable').forEach(img => {
+        img.addEventListener('click', () => {
+            // Guardar referencia a las imágenes actuales
+            let product, images;
+            
+            // Verificar si es una imagen de reseña
+            if (img.classList.contains('review-img')) {
+            const reviewId = img.dataset.reviewId;
+            
+            // Para imágenes de reseñas, solo mostrar esa imagen específica
+            currentProductImages = [img.src];
+            currentImageIndex = 0;
+            
+            // Configurar botones de navegación
+            modalPrev.style.display = 'none';
+            modalNext.style.display = 'none';
+            } else {
+            // Es una imagen de producto normal
+            product = img.closest('.producto');
+            currentProductImages = Array.from(product.querySelectorAll('.thumb-img')).map(thumb => thumb.src);
+            
+            // Si no hay miniaturas, usar solo la imagen principal
+            if (currentProductImages.length === 0) {
+                currentProductImages = [img.src];
+            }
+            
+            // Encontrar el índice de la imagen actual
+            currentImageIndex = currentProductImages.indexOf(img.src);
+            if (currentImageIndex === -1) currentImageIndex = 0;
+            
+            // Mostrar botones de navegación si hay más de una imagen
+            modalPrev.style.display = currentProductImages.length > 1 ? 'flex' : 'none';
+            modalNext.style.display = currentProductImages.length > 1 ? 'flex' : 'none';
+            }
+            
+            // Mostrar la imagen en el modal
+            modalImg.src = img.src;
+            
+            // Establecer un tamaño uniforme para todas las imágenes del modal
+            modalImg.style.width = 'auto';
+            modalImg.style.height = 'auto';
+            modalImg.style.maxWidth = '100%';
+            modalImg.style.maxHeight = '70vh'; // Altura máxima para mantener proporción
+            modalImg.style.objectFit = 'contain'; // Mantener proporción de aspecto
+            
+            imageModal.classList.remove('hidden');
+        });
+        });
+
+        // Implementar animación para imágenes de reseñas
+        document.querySelectorAll('.review-img').forEach(img => {
+        img.addEventListener('mouseover', () => {
+            img.classList.add('review-img-hover');
+        });
+        
+        img.addEventListener('mouseout', () => {
+            img.classList.remove('review-img-hover');
+        });
+        });
+
+        // Cerrar modal
+        modalClose.addEventListener('click', () => {
+        imageModal.classList.add('hidden');
+        });
+
+        // También cerrar modal al hacer clic fuera de la imagen
+        imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) {
+            imageModal.classList.add('hidden');
+        }
+        });
+
+        // Navegación en el modal
+        modalPrev.addEventListener('click', () => {
+        if (currentProductImages.length <= 1) return;
+        
+        currentImageIndex = (currentImageIndex - 1 + currentProductImages.length) % currentProductImages.length;
+        modalImg.src = currentProductImages[currentImageIndex];
+        });
+
+        modalNext.addEventListener('click', () => {
+        if (currentProductImages.length <= 1) return;
+        
+        currentImageIndex = (currentImageIndex + 1) % currentProductImages.length;
+        modalImg.src = currentProductImages[currentImageIndex];
+        });
+
+        // Selección de tallas
+        document.querySelectorAll('.size-button').forEach(button => {
+        button.addEventListener('click', () => {
+            // Quitar la clase active de todos los botones en el mismo grupo
+            const sizeButtons = button.parentElement.querySelectorAll('.size-button');
+            sizeButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Añadir la clase active al botón seleccionado
+            button.classList.add('active');
+        });
+        });
+
+        // Selección de colores
+        document.querySelectorAll('.color-box').forEach(colorBox => {
+        colorBox.addEventListener('click', () => {
+            // Quitar la clase selected de todos los colores en el mismo grupo
+            const colorBoxes = colorBox.parentElement.querySelectorAll('.color-box');
+            colorBoxes.forEach(box => box.classList.remove('selected'));
+            
+            // Añadir la clase selected al color seleccionado
+            colorBox.classList.add('selected');
+        });
+        });
+
+        // Función para resaltar la categoría seleccionada
+        function highlightCategory(category) {
+        // Quitar resaltado de todas las categorías
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.classList.remove('category-active');
+        });
+        
+        // Resaltar la categoría seleccionada
+        const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
+        if (categoryCard) {
+            categoryCard.classList.add('category-active');
+        }
+        
+        // Hacer scroll a la sección de la categoría
+        const categorySection = document.getElementById(category);
+        if (categorySection) {
+            categorySection.scrollIntoView({ behavior: 'smooth' });
+        }
+        }
+
+        // Evento para las tarjetas de categorías
+        document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.category;
+            highlightCategory(category);
+        });
+        });
+
+        // Animación de productos añadidos al carrito
+        function showAddedToCart(product) {
+        product.classList.add('added-to-cart');
+        
         setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.style.display = 'none';
-            form.reset();
-        }, 300);
-    }
-
-    // Event listeners para el modal
-    closeModal.addEventListener('click', closeModalFunction);
-    
-    // Cerrar con ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            closeModalFunction();
+            product.classList.remove('added-to-cart');
+        }, 2000);
         }
-    });
-    
-    // Cerrar al hacer clic fuera del contenido del modal
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModalFunction();
-        }
-    });
 
-    // Crear y agregar botón de cierre en la parte inferior
-    function addBottomCloseButton() {
-        const modalContent = document.querySelector('.modal-content');
-        const bottomCloseBtn = document.createElement('button');
-        bottomCloseBtn.textContent = 'Cerrar';
-        bottomCloseBtn.className = 'btn-close-bottom';
-        bottomCloseBtn.style.cssText = `
-            display: block;
-            width: 100%;
-            padding: 0.8rem;
-            margin-top: 1.5rem;
-            background: var(--gray);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        // Función para mostrar notificaciones
+        function showNotification(message, type = 'success') {
+        // Crear el elemento de notificación
+        const notification = document.createElement('div');
+        notification.className = `notification fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`;
+        
+        notification.innerHTML = `
+            <div class="flex items-center gap-2">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <p>${message}</p>
+            </div>
         `;
-        bottomCloseBtn.addEventListener('mouseover', function() {
-            this.style.background = 'var(--primary)';
+        
+        // Añadir al DOM
+        document.body.appendChild(notification);
+        
+        // Eliminar después de 3 segundos
+        setTimeout(() => {
+            notification.classList.add('opacity-0');
+            setTimeout(() => {
+            document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+        }
+
+        // Ejemplo de uso en productos de WhatsApp
+        document.querySelectorAll('.producto a[href*="wa.me"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            // No prevenir la navegación predeterminada para que el enlace siga funcionando
+            // e.preventDefault();
+            
+            // Mostrar animación de añadido al carrito
+            const product = link.closest('.producto');
+            showAddedToCart(product);
+            
+            // Mostrar notificación
+            showNotification('¡Redirigiendo a WhatsApp!');
         });
-        bottomCloseBtn.addEventListener('mouseout', function() {
-            this.style.background = 'var(--gray)';
         });
-        bottomCloseBtn.addEventListener('click', closeModalFunction);
-        modalContent.appendChild(bottomCloseBtn);
+
+        // Inicialización - Activar la primera categoría por defecto
+        window.addEventListener('DOMContentLoaded', () => {
+        // Activar la primera miniatura de cada producto
+        document.querySelectorAll('.producto').forEach(producto => {
+            const firstThumb = producto.querySelector('.thumb-img');
+            if (firstThumb) {
+            firstThumb.classList.add('active');
+            }
+        });
+        
+        // Si hay un hash en la URL, navegar a esa categoría
+        if (window.location.hash) {
+            const category = window.location.hash.substring(1);
+            highlightCategory(category);
+        }
+        
+        // Ajustar las reseñas para que tengan un tamaño uniforme
+        formatReviews();
+        
+        // Inicializar los toggles de reseñas de productos
+        initProductReviewsToggles();
+        });
+
+        // Inicializar toggles de reseñas en productos
+        function initProductReviewsToggles() {
+        document.querySelectorAll('.product-reviews-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+            // Encontrar el contenedor de reseñas asociado
+            const reviewsContent = toggle.closest('.bg-slate-50').querySelector('.product-reviews-content');
+            const icon = toggle.querySelector('i');
+            
+            // Alternar la visibilidad
+            if (reviewsContent.style.maxHeight === '0px' || reviewsContent.style.maxHeight === '') {
+                reviewsContent.style.maxHeight = reviewsContent.scrollHeight + 'px';
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                toggle.innerHTML = 'Ocultar <i class="fas fa-chevron-up ml-1"></i>';
+            } else {
+                reviewsContent.style.maxHeight = '0px';
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                toggle.innerHTML = 'Ver todas <i class="fas fa-chevron-down ml-1"></i>';
+            }
+            });
+        });
+        }
+
+        // Función para formatear las reseñas con altura uniforme
+        function formatReviews() {
+        const reviews = document.querySelectorAll('.reseña');
+        
+        // Primero, resetear cualquier altura establecida anteriormente
+        reviews.forEach(review => {
+            const textContent = review.querySelector('p:not([class*="text-yellow"])');
+            if (textContent) {
+            textContent.style.height = 'auto';
+            }
+        });
+        
+        // Encontrar la altura máxima entre todas las reseñas
+        let maxHeight = 80; // Altura mínima por defecto (en píxeles)
+        
+        // Aplicar la misma altura a todos los párrafos de reseñas
+        reviews.forEach(review => {
+            const textContent = review.querySelector('p:not([class*="text-yellow"])');
+            if (textContent) {
+            textContent.style.height = `${maxHeight}px`;
+            textContent.style.overflow = 'auto';
+            textContent.style.display = '-webkit-box';
+            textContent.style.webkitLineClamp = '4';
+            textContent.style.webkitBoxOrient = 'vertical';
+            textContent.style.textOverflow = 'ellipsis';
+            }
+        });
+        
+        // Establecer ancho fijo para todas las reseñas
+        reviews.forEach(review => {
+            review.style.width = '280px';
+            review.style.minWidth = '280px';
+        });
+        }
+
+        // Ajustar las reseñas si se redimensiona la ventana
+        window.addEventListener('resize', formatReviews);
+
+        // Soporte para teclas en el modal
+        document.addEventListener('keydown', (e) => {
+        if (!imageModal.classList.contains('hidden')) {
+            if (e.key === 'Escape') {
+            imageModal.classList.add('hidden');
+            } else if (e.key === 'ArrowLeft') {
+            modalPrev.click();
+            } else if (e.key === 'ArrowRight') {
+            modalNext.click();
+            }
+        }
+        });
+        // Implementar animación para imágenes de reseñas
+        document.querySelectorAll('.review-img').forEach(img => {
+            img.addEventListener('mouseover', () => {
+            img.classList.add('review-img-hover');
+            });
+            
+            img.addEventListener('mouseout', () => {
+            img.classList.remove('review-img-hover');
+            });
+        });
+        // Mostrar notificación de envío gratuito (centrada)
+window.addEventListener('DOMContentLoaded', () => {
+    const freeDeliveryNotification = document.getElementById('free-delivery-notification');
+    const closeNotification = document.getElementById('close-notification');
+    const acceptNotification = document.getElementById('accept-notification');
+    
+    // Comprobar si ya se mostró anteriormente en esta sesión
+    if (sessionStorage.getItem('deliveryNotificationShown') !== 'true') {
+      // Mostrar la notificación después de un pequeño retraso
+      setTimeout(() => {
+        freeDeliveryNotification.classList.remove('opacity-0', 'pointer-events-none');
+        freeDeliveryNotification.querySelector('div').classList.remove('scale-95');
+        freeDeliveryNotification.querySelector('div').classList.add('scale-100');
+      }, 1000);
+      
+      // Marcar como mostrado
+      sessionStorage.setItem('deliveryNotificationShown', 'true');
     }
     
-    // Agregar el botón de cierre inferior
-    addBottomCloseButton();
-
-    // Manejo del formulario
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        // Animación del botón
-        const btn = event.target.querySelector('button[type="submit"]');
-        btn.classList.add('pulse');
-        setTimeout(() => {
-            btn.classList.remove('pulse');
-            calculateCommission();
-        }, 500);
-    });
-
-    // Función principal de cálculo
-    function calculateCommission() {
-        const puntos = parseFloat(document.getElementById('puntos').value) || 0;
-        const efectividad = parseFloat(document.getElementById('efectividad').value) || 0;
-        const noAplica = parseFloat(document.getElementById('Noaplica').value) || 0;
-        const caidaFront = parseFloat(document.getElementById('caidaFront').value) || 0;
-        const csat = parseFloat(document.getElementById('csat').value) || 0;
-
-        const amonestaciones = parseInt(document.getElementById('amonestaciones').value) || 0;
-        const suspensiones = parseInt(document.getElementById('suspensiones').value) || 0;
-        const ausentismos = parseInt(document.getElementById('ausentismos').value) || 0;
-        const malasPracticas = parseInt(document.getElementById('malasPracticas').value) || 0;
-
-        // Escala de puntos
-        let pagoPunto = 0;
-        if (puntos <= 120) pagoPunto = 0;
-        else if (puntos <= 179) pagoPunto = 0.80;
-        else if (puntos <= 229) pagoPunto = 1.00;
-        else pagoPunto = 1.60;
-        
-        let comision = puntos * pagoPunto;
-        let detalles = "";
-
-        // Filtro PEC
-        if (efectividad < 70) {
-            comision = 0;
-            detalles += `<p class="penalty-text">❌ No cumple con efectividad mínima (70%)</p>`;
-        }
-
-        if (comision > 0) {
-            // Efectividad
-            if (efectividad >= 90) {
-                comision *= 1.4;
-                detalles += `<p class="bonus-text">✅ Bonificación por Efectividad alta (40%)</p>`;
-            } else {
-                comision *= 0.75;
-                detalles += `<p class="penalty-text">❌ Penalidad por Efectividad baja (25%)</p>`;
-            }
-
-            // No Aplica
-            if (noAplica <= 48) {
-                comision *= 1.2;
-                detalles += `<p class="bonus-text">✅ Bonificación por No Aplica bajo (≤48%) - 20%</p>`;
-            } else {
-                comision *= 0.95;
-                detalles += `<p class="penalty-text">❌ Penalidad por No Aplica alto (>48%) - 5%</p>`;
-            }
-
-            // Caída Front
-            if (caidaFront <= 2) {
-                comision *= 1.2;
-                detalles += `<p class="bonus-text">✅ Bonificación por Caída Front baja (≤2%) - 20%</p>`;
-            } else {
-                comision *= 0.95;
-                detalles += `<p class="penalty-text">❌ Penalidad por Caída Front alta (>2%) - 5%</p>`;
-            }
-
-            // CSAT
-            if (csat >= 8.8) {
-                comision *= 1.2;
-                detalles += `<p class="bonus-text">✅ Bonificación por CSAT alto (≥8.8) - 20%</p>`;
-            } else {
-                comision *= 0.95;
-                detalles += `<p class="penalty-text">❌ Penalidad por CSAT bajo (<8.8) - 5%</p>`;
-            }
-
-            // Penalidades comportamiento
-            if (amonestaciones > 0) {
-                comision *= 0.7;
-                detalles += `<p class="penalty-text">❌ Penalidad por amonestaciones (30%)</p>`;
-            }
-            if (ausentismos === 1) {
-                comision *= 0.70;
-                detalles += `<p class="penalty-text">❌ Penalidad por 2 ausentismos injustificados (30%)</p>`;
-            }
-            if (ausentismos === 2) {
-                comision *= 0.40;
-                detalles += `<p class="penalty-text">❌ Penalidad por 3 ausentismos injustificados (60%)</p>`;
-            }
-            if (ausentismos >= 3) {
-                comision *= 0.10;
-                detalles += `<p class="penalty-text">❌ Penalidad por 4+ ausentismos injustificados (90%)</p>`;
-            }
-            if (suspensiones > 0) {
-                comision = 0;
-                detalles += `<p class="penalty-text">❌ Penalidad por suspensiones (100%)</p>`;
-            }
-            if (malasPracticas > 0) {
-                comision = 0;
-                detalles += `<p class="penalty-text">❌ Penalidad por malas prácticas (100%)</p>`;
-            }
-        }
-
-        // Mostrar resultado
-        resultAmount.textContent = `S/ ${comision.toFixed(2)}`;
-        
-        // Agregar clase para el resultado
-        if (comision > 0) {
-            resultAmount.classList.add('positive-result');
-            resultAmount.classList.remove('zero-result');
-        } else {
-            resultAmount.classList.add('zero-result');
-            resultAmount.classList.remove('positive-result');
-        }
-
-        // Mostrar detalles
-        penaltyDetailsDiv.innerHTML = detalles;
-
-        // Mostrar el modal
-        showModal();
+    // Función para cerrar la notificación
+    function closeModal() {
+      freeDeliveryNotification.classList.add('opacity-0', 'pointer-events-none');
+      freeDeliveryNotification.querySelector('div').classList.remove('scale-100');
+      freeDeliveryNotification.querySelector('div').classList.add('scale-95');
     }
-
-    // Efecto hover en inputs
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-        });
-        input.addEventListener('mouseleave', function() {
-            this.style.transform = '';
-            this.style.boxShadow = '';
-        });
+    
+    // Cerrar al hacer clic en el botón de cerrar
+    closeNotification.addEventListener('click', closeModal);
+    
+    // Cerrar al hacer clic en el botón Entendido
+    acceptNotification.addEventListener('click', closeModal);
+    
+    // También cerrar al hacer clic fuera del modal
+    freeDeliveryNotification.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
     });
-
-    // Validación de inputs
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.addEventListener('input', function() {
-            if (this.value < 0) this.value = 0;
-            if (this.id === 'efectividad' && this.value > 100) this.value = 100;
-            if (this.id === 'Noaplica' && this.value > 100) this.value = 100;
-            if (this.id === 'caidaFront' && this.value > 100) this.value = 100;
-            if (this.id === 'csat' && this.value > 10) this.value = 10;
-        });
+    
+    // Cerrar con la tecla ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !freeDeliveryNotification.classList.contains('opacity-0')) {
+        closeModal();
+      }
     });
-
-    // Presionar Enter para calcular
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.querySelector('.btn-calculate').click();
-            }
-        });
-    });
-});
+  });
